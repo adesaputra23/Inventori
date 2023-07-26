@@ -1,0 +1,51 @@
+@extends('layouts_v2.master_page')
+@section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Data {{$title}}</h5>
+                    <hr>
+                    @include('alert_message.alert')
+                    <button type="button" id="btn-tambah" class="btn btn-warning btn-sm mb-3">Tambah Data</button>
+                    <div class="table-responsive">
+                        <table id="zero_config" class="table table-striped table-bordered">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>No</th>
+                                    <th>Col 1</th>
+                                    <th>Col 2</th>
+                                    <th>Col 3</th>
+                                    <th>Col 4</th>
+                                    <th>Col 5</th>
+                                    <th style="width: 15%">Col Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Col No</td>
+                                    <td>Col 1</td>
+                                    <td>Col 2</td>
+                                    <td>Col 3</td>
+                                    <td>Col 4</td>
+                                    <td>Col 5</td>
+                                    <td class="text-center">
+                                        <button id="btn-edit" type="button" class="btn-edit btn btn-warning btn-sm">Edit</button>
+                                        <button type="button" class="btn btn-danger btn-sm text-white btn-hapus">Hapus</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@include('modals.modals')
+@push('costum-js')
+<script>
+    $('#zero_config').DataTable();
+</script>
+@endpush
+@endsection
