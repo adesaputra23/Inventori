@@ -20,7 +20,7 @@
                                     <th>Email</th>
                                     <th>Role Level</th>
                                     <th>Tanggal Buat</th>
-                                    <th style="width: 15%">Aksi</th>
+                                    <th style="width: 20%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,8 +37,11 @@
                                                 $disabled = '';
                                                 if ($data->role->role === 1)$disabled = "disabled";
                                             @endphp
-                                            <button {{$disabled}} data-nik={{$data->nik}} id="btn-edit" type="button" class="btn-edit btn btn-warning btn-sm">Edit</button>
-                                            <button {{$disabled}} data-nik={{$data->nik}} type="button" class="btn btn-danger btn-sm text-white btn-hapus">Hapus</button>
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <button {{$disabled}} data-nik={{$data->nik}} id="btn-edit" type="button" class="btn-edit btn btn-warning btn-sm">Edit</button>
+                                                <button {{$disabled}} data-nik={{$data->nik}} type="button" class="btn btn-danger btn-sm text-white btn-hapus">Hapus</button>
+                                                <button data-nik={{$data->nik}} type="button" class="btn btn-success btn-sm text-white btn-ubah-password">Edit Pass</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -51,6 +54,43 @@
     </div>
 
 @include('modals.modals')
+
+{{-- Modal Hapus --}}
+<div class="modal" id="modal-ubah-pass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Ubah Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="form-modal-ubah-pass" action="{{ route('user.ubah.password') }}" method="post">
+            @csrf
+            <div class="modal-body">
+                <input name="nik_ubah_pass" type="hidden" class="form-control" id="nik_ubah_pass">
+                <div class="form-group row">
+                    <label for="fname" class="col-sm-3 control-label col-form-label">Password</label>
+                    <div class="col-sm-9">
+                        <input name="pass" type="password" class="form-control" id="pass"
+                            placeholder="Masukan Password">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="fname" class="col-sm-3 control-label col-form-label">Konnfirmasi Password</label>
+                    <div class="col-sm-9">
+                        <input name="konfirmasiPass" type="password" class="form-control" id="konfirmasiPass"
+                            placeholder="Masukan Konfirmasi Password">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-success">Simpan</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
 @push('costum-js')
 <script>
     var roleMap = {!! json_encode($roleMap) !!};
@@ -168,6 +208,32 @@
             },
         });
     }
+
+    $('.btn-ubah-password').on('click', function(e){
+        $('#modal-ubah-pass').modal('show', true);
+        var nikUbahPass = $(this).data('nik');
+        $('#nik_ubah_pass').val(nikUbahPass);
+        $("#form-modal-ubah-pass").validate({
+            rules: {
+                pass: {
+                    required: true,
+                },
+                konfirmasiPass: {
+                    required: true,
+                    equalTo: "#pass"
+                }
+            },
+            messages: {
+                pass: {
+                    required: "Password tidak boleh kosong!",
+                },
+                konfirmasiPass: {
+                    required: "Konfirmasi password tidak boleh kosong!",
+                    equalTo: "Konfirmasi password salah!",
+                }
+            }
+        });
+    });
 </script>
 @endpush
 @endsection

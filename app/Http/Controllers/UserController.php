@@ -179,5 +179,18 @@ class UserController extends Controller
             return redirect()->route('profile', ['nik' => $nik])->with('error', $th->getMessage());
         }
    }
+
+   public function ubahPasswordUser(Request $request)
+   {
+       try {
+            $model = new User();
+            $user = $model->where('nik', $request->nik_ubah_pass)->first();
+            $user->password     = Hash::make($request->pass);
+            $user->save();
+            return redirect()->route('user.index')->with('success', " Ubah Password Nik : {$request->nik_ubah_pass} Berhasil");
+        } catch (\Throwable $th) {
+            return redirect()->route('user.index')->with('error', " Ubah Password Nik : {$request->nik_ubah_pass} ".$th->getMessage());
+        }
+   }
     
 }

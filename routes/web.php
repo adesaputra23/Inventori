@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function(){
             Route::post('/uniq-nik', 'UserController@UniqNik')->name('.uniq.nik');
             Route::get('/get-nik', 'UserController@GetNik')->name('.get.nik');
             Route::get('/hapus-user', 'UserController@HapusUser')->name('.hapus.user');
+            Route::post('/ubah-pass-user', 'UserController@ubahPasswordUser')->name('.ubah.password');
         }
     );
 

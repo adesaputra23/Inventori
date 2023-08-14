@@ -25,15 +25,18 @@
 				<div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
 					<div class="d-table-cell align-middle">
 
-						<div class="text-center mt-4">
-							<h1 class="h2">Selamat Datang Kembali!</h1>
-							<p class="lead">
-								Silahkan login kembali ke akun anda
-							</p>
-						</div>
 						@include('alert_message.alert')
 						<div class="card">
 							<div class="card-body">
+
+								<div class="text-center">
+									<img style="width: 8rem" src="{{ asset('assets/images/logo_1.jpg') }}" class="rounded-circle" alt="Cinque Terre"> 
+								</div>
+								<div class="mt-3">
+									<p class="text-center lead"><span>SISTEM INFORMASI INVENTARIS</span></p>
+									<p class="text-center" style="margin-top: -20px"><span>Kecamatan Sukun Malang</span></p>
+								</div>
+
 								<div class="m-sm-3">
 									<form method="post" action="{{ route('login.proses') }}">
 										@csrf
