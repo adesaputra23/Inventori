@@ -28,13 +28,13 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/login-proses', 'UserController@LoginProses')->name('login.proses');
 });
 
-Route::group(['middleware' => 'auth'], function(){
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', 'UserController@Logout')->name('logout');
     Route::get('/home', 'HomeController@index')->name('home');
 
     // User
     Route::name('user')->prefix('user')->group(
-        function() {
+        function () {
             Route::get('/index', 'UserController@index')->name('.index');
             Route::post('/add-user', 'UserController@AddUser')->name('.add.user');
             Route::post('/uniq-nik', 'UserController@UniqNik')->name('.uniq.nik');
@@ -45,7 +45,7 @@ Route::group(['middleware' => 'auth'], function(){
     );
 
     Route::name('persediaan')->prefix('persediaan')->group(
-        function(){
+        function () {
             Route::get('/index', 'PersediaanBarangController@index')->name('.index');
             Route::get('/get-id-persediaan', 'PersediaanBarangController@GetIdPersediaan')->name('.get.id_persediaan');
             Route::post('/add-persediaan', 'PersediaanBarangController@AddPersediaan')->name('.add.persediaan');
@@ -54,7 +54,7 @@ Route::group(['middleware' => 'auth'], function(){
     );
 
     Route::name('kategori')->prefix('kategori')->group(
-        function(){
+        function () {
             Route::get('/index', 'KategoriController@index')->name('.index');
             Route::post('/add-kategori', 'KategoriController@create')->name('.add.kategori');
             Route::get('/get-kode', 'KategoriController@getKode')->name('.get.kode');
@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth'], function(){
     );
 
     Route::name('keluar')->prefix('keluar')->group(
-        function(){
+        function () {
             Route::get('/index', 'BarangKeluarController@index')->name('.index');
             Route::post('/add-keluar', 'BarangKeluarController@AddBarangKeluar')->name('.add.keluar');
             Route::get('/get-kode', 'BarangKeluarController@getKode')->name('.get.kode');
@@ -72,7 +72,7 @@ Route::group(['middleware' => 'auth'], function(){
     );
 
     Route::name('ruang')->prefix('ruang')->group(
-        function(){
+        function () {
             Route::get('/index', 'RuangController@index')->name('.index');
             Route::post('/add-ruang', 'RuangController@AddRuang')->name('.add.ruang');
             Route::get('/get-kode', 'RuangController@getKode')->name('.get.kode');
@@ -81,7 +81,7 @@ Route::group(['middleware' => 'auth'], function(){
     );
 
     Route::name('perpindahan')->prefix('perpindahan')->group(
-        function(){
+        function () {
             Route::get('/index', 'PerpindahanController@index')->name('.index');
             Route::post('/add-perpindahan', 'PerpindahanController@AddPerpindahan')->name('.add.perpindahan');
             Route::get('/get-kode', 'PerpindahanController@getKode')->name('.get.kode');
@@ -89,20 +89,26 @@ Route::group(['middleware' => 'auth'], function(){
         }
     );
 
+    Route::name('suplier')->prefix('suplier')->group(
+        function () {
+            Route::get('/index', 'SuplierController@index')->name('.index');
+            Route::post('/add-data', 'SuplierController@store')->name('.add.data');
+            Route::get('/get-kode', 'SuplierController@getKode')->name('.get.kode');
+            Route::get('/hapus-data', 'SuplierController@destroy')->name('.hapus.data');
+        }
+    );
+
     // Laporan PDF
     Route::name('laporan')->prefix('laporan')->group(
-        function(){
-            Route::get('/pdf-inventory','LaporanController@InventoryPDF')->name('.inventory.pdf');
-            Route::get('/pdf-persediaan-barang','LaporanController@PersediaanBarangPDF')->name('.persediaan.barang.pdf');
-            Route::get('/pdf-barang-keluar','LaporanController@BarangKeluarPDF')->name('.barang.keluar.pdf');
-            Route::get('/pdf-perpindahan-barang','LaporanController@PerpindahanBarangPDF')->name('.perpindahan.barang.pdf');
+        function () {
+            Route::get('/pdf-inventory', 'LaporanController@InventoryPDF')->name('.inventory.pdf');
+            Route::get('/pdf-persediaan-barang', 'LaporanController@PersediaanBarangPDF')->name('.persediaan.barang.pdf');
+            Route::get('/pdf-barang-keluar', 'LaporanController@BarangKeluarPDF')->name('.barang.keluar.pdf');
+            Route::get('/pdf-perpindahan-barang', 'LaporanController@PerpindahanBarangPDF')->name('.perpindahan.barang.pdf');
         }
     );
 
     Route::get('/profile/{nik}', 'UserController@Profile')->name('profile');
     Route::post('/upload-gambar/{nik}', 'UserController@UploadGambar')->name('upload.gambar');
     Route::post('/update-profile/{nik}', 'UserController@UpdateProfile')->name('update.profile');
-
 });
-
-

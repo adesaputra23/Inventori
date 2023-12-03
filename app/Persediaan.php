@@ -18,4 +18,9 @@ class Persediaan extends Model
         $hotel_name = array_column($kode_persediaan, 'kode_kategori');
         return join('.',$hotel_name);
     }
+
+    public function suplier()
+    {
+        return $this->hasOne('App\Suplier', 'kode_suplier', 'kode_suplier');
+    }
 }

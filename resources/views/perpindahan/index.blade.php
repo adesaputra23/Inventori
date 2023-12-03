@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Data {{$title}}</h5>
+                    <h5 class="card-title">Data {{ $title }}</h5>
                     <hr>
                     @include('alert_message.alert')
                     @if (!User::isKepala())
@@ -21,6 +21,7 @@
                                     <th>No</th>
                                     <th>Kode Perpindahan</th>
                                     <th>Kode Brang</th>
+                                    <th>Nama Brang</th>
                                     <th>Nama Ruangan</th>
                                     <th>No Surat Perpindahan</th>
                                     <th>Tanggal Perpindahan</th>
@@ -33,17 +34,22 @@
                             <tbody>
                                 @foreach ($listPerpindahan as $key => $data)
                                     <tr>
-                                        <td>{{$key+1}}</td>
-                                        <td>{{$data->kode_perpindahan}}</td>
-                                        <td>{{Persediaan::gnerateKode($data->id_persediaan)}}</td>
-                                        <td>{{$data->ruang->nama_ruang}}</td>
-                                        <td>{{$data->no_surat_perpindahan}}</td>
-                                        <td style="width: 15%">{{\Carbon\Carbon::parse($data->tanggal_perpindahan)->format('d M Y')}}</td>
-                                        <td class="@if ($data->ket_perpindahan == null) text-center @endif">{{$data->ket_perpindahan ?? '-'}}</td>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $data->kode_perpindahan }}</td>
+                                        <td>{{ Persediaan::gnerateKode($data->id_persediaan) }}</td>
+                                        <td>{{ $data->persediaan->nama_barang }}</td>
+                                        <td>{{ $data->ruang->nama_ruang }}</td>
+                                        <td>{{ $data->no_surat_perpindahan }}</td>
+                                        <td style="width: 15%">
+                                            {{ \Carbon\Carbon::parse($data->tanggal_perpindahan)->format('d M Y') }}</td>
+                                        <td class="@if ($data->ket_perpindahan == null) text-center @endif">
+                                            {{ $data->ket_perpindahan ?? '-' }}</td>
                                         @if (!User::isKepala())
                                             <td class="text-center">
-                                                <button data-kode="{{$data->kode_perpindahan}}" id="btn-edit" type="button" class="btn-edit btn btn-warning btn-sm">Edit</button>
-                                                <button data-kode="{{$data->kode_perpindahan}}" type="button" class="btn btn-danger btn-sm text-white btn-hapus">Hapus</button>
+                                                <button data-kode="{{ $data->kode_perpindahan }}" id="btn-edit"
+                                                    type="button" class="btn-edit btn btn-warning btn-sm">Edit</button>
+                                                <button data-kode="{{ $data->kode_perpindahan }}" type="button"
+                                                    class="btn btn-danger btn-sm text-white btn-hapus">Hapus</button>
                                             </td>
                                         @endif
                                     </tr>
@@ -56,53 +62,53 @@
         </div>
     </div>
 
-@include('modals.modals')
-@push('costum-js')
-<script>
-    $('#zero_config').DataTable();
-    var persediaanBarang = {!! json_encode($persediaanBarang) !!};
-    var persediaanBarangUpdate = {!! json_encode($persediaanBarangUpdate) !!};
-    var ruangan = {!! json_encode($getRuangan) !!};
-    $('#btn-tambah').on('click', function(e){
-        var params = {
-            title : 'Tambah Data Perpindahan',
-            aksi : 'tambah', 
-            data : null,
-        };
-        setDataformInput(params);
-    });
-    $('.btn-edit').on('click', function(e){
-        var kode = $(this).data('kode');
-        $.ajax({
-            type: "get",
-            url: "{{route('perpindahan.get.kode')}}",
-            data: {
-                kode: kode,
-                type: "getKode",
-                _token: "{{ csrf_token() }}",
-            },
-            dataType: "json",
-            success: function (response) {
+    @include('modals.modals')
+    @push('costum-js')
+        <script>
+            $('#zero_config').DataTable();
+            var persediaanBarang = {!! json_encode($persediaanBarang) !!};
+            var persediaanBarangUpdate = {!! json_encode($persediaanBarangUpdate) !!};
+            var ruangan = {!! json_encode($getRuangan) !!};
+            $('#btn-tambah').on('click', function(e) {
                 var params = {
-                    title : 'Edit Data Barang Perpindahan',
-                    aksi : 'edit', 
-                    data : response,
+                    title: 'Tambah Data Perpindahan',
+                    aksi: 'tambah',
+                    data: null,
                 };
                 setDataformInput(params);
-            }
-        });
-    });
+            });
+            $('.btn-edit').on('click', function(e) {
+                var kode = $(this).data('kode');
+                $.ajax({
+                    type: "get",
+                    url: "{{ route('perpindahan.get.kode') }}",
+                    data: {
+                        kode: kode,
+                        type: "getKode",
+                        _token: "{{ csrf_token() }}",
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        var params = {
+                            title: 'Edit Data Barang Perpindahan',
+                            aksi: 'edit',
+                            data: response,
+                        };
+                        setDataformInput(params);
+                    }
+                });
+            });
 
-    function setDataformInput(params) {
-        var isData = params.data != null ? params.data : '';
-        var setPersediaanBarang = persediaanBarang;
-        if (params.aksi === 'edit')setPersediaanBarang = persediaanBarangUpdate;
-        console.log(persediaanBarang);
-        $('#add-modal').modal('show', true);
-        $('#add-modal .modal-title').text(params.title);
-        $('#add-modal .modal-body').empty();
-        $('#form-modal').attr('action', "{{route('perpindahan.add.perpindahan')}}");
-        var setHtml = `
+            function setDataformInput(params) {
+                var isData = params.data != null ? params.data : '';
+                var setPersediaanBarang = persediaanBarang;
+                if (params.aksi === 'edit') setPersediaanBarang = persediaanBarangUpdate;
+                console.log(persediaanBarang);
+                $('#add-modal').modal('show', true);
+                $('#add-modal .modal-title').text(params.title);
+                $('#add-modal .modal-body').empty();
+                $('#form-modal').attr('action', "{{ route('perpindahan.add.perpindahan') }}");
+                var setHtml = `
             <input type="hidden" class="form-control" id="aksi" name="aksi" value="${params.aksi}">
             <div class="form-group row">
                 <label for="fname" class="col-sm-3 control-label col-form-label">Kode Perpindahan</label>
@@ -115,7 +121,7 @@
                 <label class="col-md-3 control-label col-form-label">Kode Barang</label>
                 <div class="col-md-9">
                     <select name="persediaan" class="form-select shadow-none" id="persediaan">
-                        <option value="" disabled selected>Pilih Persediaan Barang</option>
+                        <option value="" disabled selected>Pilih Barang</option>
                     </select>
                 </div>
             </div>
@@ -142,80 +148,85 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="cono1" class="col-sm-3 control-label col-form-label">Uraian Perpindahan</label>
-                <div class="col-sm-9">
-                    <textarea class="form-control" placeholder="Masukan Uraian Perpindahan" id="uraian" name="uraian">${isData.uraian_perpindahan !== undefined ? isData.uraian_perpindahan : ''}</textarea>
-                </div>
-            </div>
-            <div class="form-group row">
                 <label for="cono1" class="col-sm-3 control-label col-form-label">Keterangan Perpindahan</label>
                 <div class="col-sm-9">
                     <textarea class="form-control" placeholder="Masukan Keterangan Perpindahan" id="keterangan" name="keterangan">${isData.ket_perpindahan !== undefined ? isData.ket_perpindahan : ''}</textarea>
                 </div>
             </div>
         `;
-        $('#add-modal .modal-body').html(setHtml);
+                $('#add-modal .modal-body').html(setHtml);
 
-        $.each(setPersediaanBarang, function (key,val) { 
-            $('#persediaan')
-                .append($(`<option ${isData.id_persediaan !== undefined && isData.id_persediaan === val.id_persediaan ? 'selected' : ''}></option>`)
-                .attr("value", val.id_persediaan)
-                .text(val.kode_persediaan + ' - ' + val.nama_barang)); 
-        }); 
-
-        $.each(ruangan, function (key,val) { 
-            $('#ruangan')
-                .append($(`<option ${isData.kode_ruang !== undefined && isData.kode_ruang === val.kode_ruang ? 'selected' : ''}></option>`)
-                .attr("value", val.kode_ruang)
-                .text(val.kode_ruang + ' - ' + val.nama_ruang)); 
-        }); 
-
-        $.validator.addMethod("remote", 
-            function(value, element) {
-                var type = 'validasi';
-                var result = false;
-                $.ajax({
-                    type:"GET",
-                    async: false,
-                    url: "{{route('perpindahan.get.kode')}}", // script to validate in server side
-                    data: {
-                        kode: value,
-                        isType: type,
-                        type: "getRemote",
-                        _token: "{{ csrf_token() }}",
-                    },
-                    success: function(data) {
-                        result = (data == true) ? true : false;
-                    }
+                $.each(setPersediaanBarang, function(key, val) {
+                    $('#persediaan')
+                        .append($(
+                                `<option ${isData.id_persediaan !== undefined && isData.id_persediaan === val.id_persediaan ? 'selected' : ''}></option>`
+                            )
+                            .attr("value", val.id_persediaan)
+                            .text(val.kode_persediaan + ' - ' + val.nama_barang));
                 });
-                // return true if username is exist in database
-                return result; 
-            }, 
-            "This kode is already taken! Try another."
-        );
 
-        $("#form-modal").validate({
-            rules:{
-                kode: {
-                    required: true,
-                    remote: params.aksi == 'tambah' ? true : false,
-                },
-                persediaan : "required",
-                ruangan: "required",
-                tanggal: "required",
-                no_surat: "required",
-            },
-        });
+                $.each(ruangan, function(key, val) {
+                    $('#ruangan')
+                        .append($(
+                                `<option ${isData.kode_ruang !== undefined && isData.kode_ruang === val.kode_ruang ? 'selected' : ''}></option>`
+                            )
+                            .attr("value", val.kode_ruang)
+                            .text(val.kode_ruang + ' - ' + val.nama_ruang));
+                });
 
-    }
+                $.validator.addMethod("remote",
+                    function(value, element) {
+                        var type = 'validasi';
+                        var result = false;
+                        $.ajax({
+                            type: "GET",
+                            async: false,
+                            url: "{{ route('perpindahan.get.kode') }}", // script to validate in server side
+                            data: {
+                                kode: value,
+                                isType: type,
+                                type: "getRemote",
+                                _token: "{{ csrf_token() }}",
+                            },
+                            success: function(data) {
+                                result = (data == true) ? true : false;
+                            }
+                        });
+                        // return true if username is exist in database
+                        return result;
+                    },
+                    "This kode is already taken! Try another."
+                );
 
-    $('.btn-hapus').on('click', function(e){
-        var kode = $(this).data('kode');
-        $('#modal-hapus').modal('show', true);
-        $('#form-modal-hapus').attr('action', "{{route('perpindahan.hapus.perpindahan')}}");
-        $('#data_uniq').val(kode);
-    });
+                $("#form-modal").validate({
+                    rules: {
+                        kode: {
+                            required: true,
+                            remote: params.aksi == 'tambah' ? true : false,
+                        },
+                        persediaan: "required",
+                        ruangan: "required",
+                        tanggal: "required",
+                        no_surat: "required",
+                    },
+                });
 
-</script>
-@endpush
+            }
+
+            $('.btn-hapus').on('click', function(e) {
+                var kode = $(this).data('kode');
+                $('#modal-hapus').modal('show', true);
+                $('#form-modal-hapus').attr('action', "{{ route('perpindahan.hapus.perpindahan') }}");
+                $('#data_uniq').val(kode);
+            });
+
+            // <div class="form-group row">
+            //     <label for="cono1" class="col-sm-3 control-label col-form-label">Uraian Perpindahan</label>
+            //     <div class="col-sm-9">
+            //         <textarea class="form-control" placeholder="Masukan Uraian Perpindahan" id="uraian" name="uraian">${isData.uraian_perpindahan !== undefined ? isData.uraian_perpindahan : ''}</textarea>
+            //     </div>
+            // </div>
+
+        </script>
+    @endpush
 @endsection

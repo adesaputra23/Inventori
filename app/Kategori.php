@@ -29,15 +29,16 @@ class Kategori extends Model
             ];
             return $kategori;
         }else{
-            $aray_type = [
-                'kode_golongan' => 1,
-                'kode_bidang' => 2,
-                'kode_kelompok' => 3,
-                'kode_sub_kelompok' => 4,
-                'kode_sub_sub_kelompok' => 5
-            ];
-            $typeKategori = $aray_type[$type];
-            $kategori = self::select('id_kategori', 'kode')->where('kode', $kode)->where('type', $typeKategori)->first()->toArray();
+            // $aray_type = [
+            //     'kode_golongan' => 1,
+            //     'kode_bidang' => 2,
+            //     'kode_kelompok' => 3,
+            //     'kode_sub_kelompok' => 4,
+            //     'kode_sub_sub_kelompok' => 5
+            // ];
+            // $typeKategori = $aray_type[$type];
+            // $kategori = self::select('id_kategori', 'kode')->where('kode', $kode)->where('type', $typeKategori)->first()->toArray();
+            $kategori = self::select('id_kategori', 'kode')->where('kode', $kode)->first()->toArray();
             return $kategori;
         }
         return false;

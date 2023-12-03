@@ -14,8 +14,8 @@
                                 <tr class="text-center">
                                     <th>No</th>
                                     <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Type</th>
+                                    <th>Kategori</th>
+                                    {{-- <th>Type</th> --}}
                                     <th>Tanggal Buat</th>
                                     <th style="width: 15%">Aksi</th>
                                 </tr>
@@ -26,7 +26,7 @@
                                         <td class="text-center">{{$key+1}}</td>
                                         <td>{{$data->kode}}</td>
                                         <td>{{$data->nama_kategori}}</td>
-                                        <td>{{$mapKategori[$data->type]}}</td>
+                                        {{-- <td>{{$mapKategori[$data->type]}}</td> --}}
                                         <td>{{$data->created_at}}</td>
                                         <td class="text-center">
                                             <button data-kode="{{$data->kode}}" id="btn-edit" type="button" class="btn-edit btn btn-warning btn-sm">Edit</button>
@@ -106,15 +106,17 @@
                         placeholder="Masukan Nama Kategori" value="${isData.nama_kategori ?? ''}">
                 </div>
             </div>
-            <div class="form-group row">
-                <label class="col-md-2 control-label col-form-label">Type Kategori</label>
-                <div class="col-md-10">
-                    <select name="type" class="form-select shadow-none" id="type">
-                        <option value="" disabled selected>Pilih Type Kategori</option>
-                    </select>
-                </div>
-            </div>
         `;
+
+        // <div class="form-group row">
+        //     <label class="col-md-2 control-label col-form-label">Type Kategori</label>
+        //     <div class="col-md-10">
+        //         <select name="type" class="form-select shadow-none" id="type">
+        //             <option value="" disabled selected>Pilih Type Kategori</option>
+        //         </select>
+        //     </div>
+        // </div>
+
         $('#add-modal .modal-body').html(setHtml);
 
         $.each(katgoriMap, function (key,val) { 
@@ -139,7 +141,6 @@
                         _token: "{{ csrf_token() }}",
                     },
                     success: function(data) {
-                        console.log(data);
                         result = (data == true) ? true : false;
                     }
                 });
@@ -156,7 +157,7 @@
                     remote: params.aksi == 'tambah' ? true : false,
                 },
                 nama_kategori : "required",
-                type: "required",
+                // type: "required",
             },
         });
 

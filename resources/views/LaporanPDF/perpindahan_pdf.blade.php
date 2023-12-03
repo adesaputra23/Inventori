@@ -10,7 +10,7 @@
             <th>Kode Barang</th>
             <th>Kode Ruang</th>
             <th>No Surat Perpindahan</th>
-            <th>Uraian</th>
+            {{-- <th>Uraian</th> --}}
             <th>Keterangan</th>
         </tr>
     </thead>
@@ -23,7 +23,7 @@
                 <td>{{Persediaan::gnerateKode($data['id_persediaan'])}} - {{$data->persediaan->nama_barang}}</td>
                 <td>{{$data['kode_ruang']}} - {{$data->ruang->nama_ruang}}</td>
                 <td>{{$data['no_surat_perpindahan']}}</td>
-                <td>{{$data['uraian_perpindahan'] ?? '-'}}</td>
+                {{-- <td>{{$data['uraian_perpindahan'] ?? '-'}}</td> --}}
                 <td>{{$data['ket_perpindahan'] ?? '-'}}</td>
             </tr>
         @endforeach

@@ -12,7 +12,7 @@
             <th colspan="3">Barang - Barang</th>
             <th rowspan="2">Harga Satuan</th>
             <th colspan="3">Jumlah Harga Barang Diterima/Keluar/Sisa</th>
-            <th rowspan="2">Tanggal Persdiaan</th>
+            <th rowspan="2">Tanggal Masuk</th>
             <th rowspan="2">Keterangan</th>
         </tr>
         <tr>

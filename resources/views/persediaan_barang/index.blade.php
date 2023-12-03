@@ -26,6 +26,7 @@
                                     <th>Sisa</th>
                                     <th>Harga Satuan</th>
                                     <th>Total Harga</th>
+                                    <th>Suplier</th>
                                     <th>Keterangan</th>
                                     @if (!User::isKepala())
                                         <th style="width: 15%">Aksi</th>
@@ -40,9 +41,10 @@
                                         <td>{{Persediaan::gnerateKode($data->id_persediaan)}}</td>
                                         <td>{{$data->nama_barang}}</td>
                                         <td class="text-center">{{$data->jumlah_masuk}}</td>
-                                        <td class="text-center">{{$data->jumlah_sisa}}</td>
+                                        <td class="text-center">{{$data->jumlah_sisa == null ? $data->jumlah_masuk : $data->jumlah_sisa }}</td>
                                         <td>{{$data->harga_satuan}}</td>
                                         <td>{{$data->jumlah_masuk * $data->harga_satuan}}</td>
+                                        <td>{{$data->suplier->instansi}}</td>
                                         <td>{{$data->ket_persediaan}}</td>
                                         @if (!User::isKepala())
                                             <td class="text-center">
@@ -64,6 +66,7 @@
 @push('costum-js')
 <script>
     var listKategori = {!! json_encode($listKategori) !!};
+    var listSuplier = {!! json_encode($listSuplier) !!};
     const Golongan = 1;
     const Bidang = 2;
     const Kelompok = 3;
@@ -72,7 +75,7 @@
     $('#zero_config').DataTable();
     $('#btn-tambah').on('click', function(e){
         var params = {
-            title : 'Tambah Data Persediaan Barang',
+            title : 'Tambah Data Barang Masuk',
             aksi : 'tambah', 
             data : null,
         };
@@ -90,8 +93,9 @@
             },
             dataType: "json",
             success: function (response) {
+                console.log(response);
                 var params = {
-                    title : 'Edit Data Persediaan Barang',
+                    title : 'Edit Data Barang Masuk',
                     aksi : 'edit', 
                     data : response,
                 };
@@ -108,7 +112,7 @@
         const date = persediaanBarang.tanggal_persediaan == undefined ? '' : moment(persediaanBarang.tanggal_persediaan).format('YYYY-MM-DD');
         const fotoBarang = isData.persediaan != null ? isData.persediaan.foto_barang : '' ;
         const splitFotoBarang = fotoBarang != undefined ? fotoBarang.split('.') : '';
-        console.log(splitFotoBarang);
+        console.log(splitKodeBarang);
         $('#add-modal').modal('show', true);
         $('#add-modal .modal-title').text(params.title);
         $('#add-modal .modal-body').empty();
@@ -118,35 +122,15 @@
             <input type="hidden" class="form-control" id="aksi" name="aksi" value="${params.aksi}">
             <input type="hidden" class="form-control" id="id_persediaan" name="id_persediaan" value="${persediaanBarang.id_persediaan ?? ''}">
             <div class="form-group row">
-                <label for="fname" class="col-sm-2 control-label col-form-label">Kode</label>
+                <label for="fname" class="col-sm-2 control-label col-form-label">Katgeori</label>
                 <div class="col-sm-10">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-6">
                             <select class="form-select shadow-none" id="kode_golongan" name="kode_golongan">
-                                <option value="" disabled selected>Golongan</option>
+                                <option value="" disabled selected>Kategori</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select shadow-none" id="kode_bidang" name="kode_bidang">
-                                <option value="" disabled selected>Bidang</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select shadow-none" id="kode_kelompok" name="kode_kelompok">
-                                <option value="" disabled selected>Kelompok</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select shadow-none" id="kode_sub_kelompok" name="kode_sub_kelompok">
-                                <option value="" disabled selected>Sub Kelompok</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select shadow-none" id="kode_sub_sub_kelompok" name="kode_sub_sub_kelompok">
-                                <option value="" disabled selected>Sub-Sub Kelompok</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
+                        <div class="col-md-6">
                             <input type="text" class="form-control" id="kode_registrasi" name="kode_registrasi"
                                 placeholder="Registrasi" value="">
                         </div>
@@ -219,6 +203,15 @@
             </div>
 
             <div class="form-group row">
+                <label class="col-md-2 control-label col-form-label">Suplier</label>
+                <div class="col-md-10">
+                    <select name="suplier" class="form-select shadow-none" id="suplier">
+                        <option value="" disabled selected>Pilih Suplier</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-sm-2 control-label col-form-label">Upload Gambar</label>
                 <div class="col-md-10">
                     <div class="custom-file">
@@ -229,51 +222,89 @@
 
         `;
         $('#add-modal .modal-body').html(setHtml);
-        $.each(listKategori[Golongan], function (key,val) { 
+        $.each(listKategori, function (key,val) { 
             $('#kode_golongan')
                 .append($(`<option ${splitKodeBarang[0] != undefined && splitKodeBarang[0] == val.kode ? 'selected' : ''}></option>`)
                 .attr("value", val.kode)
-                .text(val.nama_kategori)); 
+                .text(val.kode + ' - ' + val.nama_kategori)); 
         });
-        $.each(listKategori[Bidang], function (key,val) { 
-            $('#kode_bidang')
-                .append($(`<option ${splitKodeBarang[1] != undefined && splitKodeBarang[1] == val.kode ? 'selected' : ''}></option>`)
-                .attr("value", val.kode)
-                .text(val.nama_kategori)); 
+
+        $.each(listSuplier, function (key,val) { 
+            $('#suplier')
+                .append($(`<option ${persediaanBarang.suplier != undefined && persediaanBarang.suplier.kode_suplier ? 'selected' : ''}></option>`)
+                .attr("value", val.kode_suplier)
+                .text(val.kode_suplier + ' - ' + val.instansi)); 
         });
-        $.each(listKategori[Kelompok], function (key,val) { 
-            $('#kode_kelompok')
-                .append($(`<option ${splitKodeBarang[2] != undefined && splitKodeBarang[2] == val.kode ? 'selected' : ''}></option>`)
-                .attr("value", val.kode)
-                .text(val.nama_kategori)); 
-        });
-        $.each(listKategori[SubKelompok], function (key,val) { 
-            $('#kode_sub_kelompok')
-                .append($(`<option ${splitKodeBarang[3] != undefined && splitKodeBarang[3] == val.kode ? 'selected' : ''}></option>`)
-                .attr("value", val.kode)
-                .text(val.nama_kategori)); 
-        });
-        $.each(listKategori[SubSubKelompok], function (key,val) { 
-            $('#kode_sub_sub_kelompok')
-                .append($(`<option ${splitKodeBarang[4] != undefined && splitKodeBarang[4] == val.kode ? 'selected' : ''}></option>`)
-                .attr("value", val.kode)
-                .text(val.nama_kategori)); 
-        });   
+
+        // <div class="col-md-2">
+        //     <select class="form-select shadow-none" id="kode_bidang" name="kode_bidang">
+        //         <option value="" disabled selected>Bidang</option>
+        //     </select>
+        // </div>
+        // <div class="col-md-2">
+        //     <select class="form-select shadow-none" id="kode_kelompok" name="kode_kelompok">
+        //         <option value="" disabled selected>Kelompok</option>
+        //     </select>
+        // </div>
+        // <div class="col-md-2">
+        //     <select class="form-select shadow-none" id="kode_sub_kelompok" name="kode_sub_kelompok">
+        //         <option value="" disabled selected>Sub Kelompok</option>
+        //     </select>
+        // </div>
+        // <div class="col-md-2">
+        //     <select class="form-select shadow-none" id="kode_sub_sub_kelompok" name="kode_sub_sub_kelompok">
+        //         <option value="" disabled selected>Sub-Sub Kelompok</option>
+        //     </select>
+        // </div>
+
+        // $.each(listKategori[Bidang], function (key,val) { 
+        //     $('#kode_bidang')
+        //         .append($(`<option ${splitKodeBarang[1] != undefined && splitKodeBarang[1] == val.kode ? 'selected' : ''}></option>`)
+        //         .attr("value", val.kode)
+        //         .text(val.nama_kategori)); 
+        // });
+        // $.each(listKategori[Kelompok], function (key,val) { 
+        //     $('#kode_kelompok')
+        //         .append($(`<option ${splitKodeBarang[2] != undefined && splitKodeBarang[2] == val.kode ? 'selected' : ''}></option>`)
+        //         .attr("value", val.kode)
+        //         .text(val.nama_kategori)); 
+        // });
+        // $.each(listKategori[SubKelompok], function (key,val) { 
+        //     $('#kode_sub_kelompok')
+        //         .append($(`<option ${splitKodeBarang[3] != undefined && splitKodeBarang[3] == val.kode ? 'selected' : ''}></option>`)
+        //         .attr("value", val.kode)
+        //         .text(val.nama_kategori)); 
+        // });
+        // $.each(listKategori[SubSubKelompok], function (key,val) { 
+        //     $('#kode_sub_sub_kelompok')
+        //         .append($(`<option ${splitKodeBarang[4] != undefined && splitKodeBarang[4] == val.kode ? 'selected' : ''}></option>`)
+        //         .attr("value", val.kode)
+        //         .text(val.nama_kategori)); 
+        // });   
 
         $('#format_kode').val(getkodeBarang);
-        $('#kode_registrasi').val(splitKodeBarang[5] ?? '');
+        $('#kode_registrasi').val(splitKodeBarang[1] ?? '');
         $('#btn-gnerate-kode').on('click', function(e){
-            var kode_golongan = $('#kode_golongan').val();
-            var kode_bidang = $('#kode_bidang').val();
-            var kode_kelompok = $('#kode_kelompok').val();
-            var kode_sub_kelompok = $('#kode_sub_kelompok').val();
-            var kode_sub_sub_kelompok = $('#kode_sub_sub_kelompok').val();
+            // var kode_golongan = $('#kode_golongan').val();
+            // var kode_bidang = $('#kode_bidang').val();
+            // var kode_kelompok = $('#kode_kelompok').val();
+            // var kode_sub_kelompok = $('#kode_sub_kelompok').val();
+            // var kode_sub_sub_kelompok = $('#kode_sub_sub_kelompok').val();
+            // var kode_registrasi = $('#kode_registrasi').val();
+            // if (kode_golongan == null || kode_bidang == null || kode_kelompok == null || kode_sub_kelompok == null || kode_sub_sub_kelompok == null || kode_registrasi == '') {
+            //     alert('Harap lengkapi inputan kode!');
+            //     return false;
+            // }
+
+            var kode_golongan = $('#kode_golongan').val();;
             var kode_registrasi = $('#kode_registrasi').val();
-            if (kode_golongan == null || kode_bidang == null || kode_kelompok == null || kode_sub_kelompok == null || kode_sub_sub_kelompok == null || kode_registrasi == '') {
+            if (kode_golongan == null || kode_registrasi == '') {
                 alert('Harap lengkapi inputan kode!');
                 return false;
             }
-            var kode_gnerate = kode_golongan + '.' + kode_bidang + '.' + kode_kelompok + '.' + kode_sub_kelompok + '.' + kode_sub_sub_kelompok + '.' + kode_registrasi;
+
+            // var kode_gnerate = kode_golongan + '.' + kode_bidang + '.' + kode_kelompok + '.' + kode_sub_kelompok + '.' + kode_sub_sub_kelompok + '.' + kode_registrasi;
+            var kode_gnerate = kode_golongan + '.' + kode_registrasi;
             $('#format_kode').val(kode_gnerate);
         });
 

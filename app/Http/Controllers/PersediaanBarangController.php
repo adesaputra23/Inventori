@@ -7,15 +7,18 @@ use App\Kategori;
 use Illuminate\Support\Facades\DB;
 use App\Persediaan;
 use App\PersediaanKode;
+use App\Suplier;
 
 class PersediaanBarangController extends Controller
 {
     public function index()
     {
-        $title = "Persediaan Barang";
-        $listKategori = Kategori::get()->groupBy('type');
-        $listPersediaan = Persediaan::get();
-        $compact = ['title', 'listKategori', 'listPersediaan'];
+        $title = "Barang Masuk";
+        // $listKategori = Kategori::get()->groupBy('type');
+        $listKategori = Kategori::get();
+        $listPersediaan = Persediaan::with('suplier')->get();
+        $listSuplier = Suplier::get();
+        $compact = ['title', 'listKategori', 'listPersediaan', 'listSuplier'];
         return view('persediaan_barang.index', compact($compact));
     }
 
@@ -35,6 +38,7 @@ class PersediaanBarangController extends Controller
                 $deleteKodePersediaan = PersediaanKode::where('id_persediaan', $req->id_persediaan);
                 $deleteKodePersediaan->delete();
             }
+            $savePersediaan->kode_suplier = $req->suplier;
             $savePersediaan->nama_barang = $req->nama_barang;
             $savePersediaan->skpd = $req->skpd;
             $savePersediaan->persediaan_no_surat = $req->no_surat;
@@ -48,13 +52,13 @@ class PersediaanBarangController extends Controller
             // kode kategor save
             $arrayKodeKategori = [];
             $golongan = Kategori::getIdKategori($req->kode_golongan, 'kode_golongan');
-            $bidang = Kategori::getIdKategori($req->kode_bidang, 'kode_bidang');
-            $kelompok = Kategori::getIdKategori($req->kode_kelompok, 'kode_kelompok');
-            $sub_kelompok = Kategori::getIdKategori($req->kode_sub_kelompok, 'kode_sub_kelompok');
-            $sub_sub_kelompok = Kategori::getIdKategori($req->kode_sub_sub_kelompok, 'kode_sub_sub_kelompok');
+            // $bidang = Kategori::getIdKategori($req->kode_bidang, 'kode_bidang');
+            // $kelompok = Kategori::getIdKategori($req->kode_kelompok, 'kode_kelompok');
+            // $sub_kelompok = Kategori::getIdKategori($req->kode_sub_kelompok, 'kode_sub_kelompok');
+            // $sub_sub_kelompok = Kategori::getIdKategori($req->kode_sub_sub_kelompok, 'kode_sub_sub_kelompok');
             $register = Kategori::getIdKategori($req->kode_registrasi, 'kode_register');
-            array_push($arrayKodeKategori, $golongan, $bidang, $kelompok, $sub_kelompok, $sub_sub_kelompok, $register);
-
+            // array_push($arrayKodeKategori, $golongan, $bidang, $kelompok, $sub_kelompok, $sub_sub_kelompok, $register);
+            array_push($arrayKodeKategori, $golongan, $register);
             foreach ($arrayKodeKategori as $key => $value) {
                 $saveKodeKategori = new PersediaanKode();
                 $saveKodeKategori->id_persediaan = $savePersediaan->id_persediaan;
@@ -74,7 +78,7 @@ class PersediaanBarangController extends Controller
     {
         try {
             if(isset($req->idPersediaan)){
-                $getId = Persediaan::where('id_persediaan', $req->idPersediaan)->first();
+                $getId = Persediaan::with('suplier')->where('id_persediaan', $req->idPersediaan)->first();
                 $kodeBarang = Persediaan::gnerateKode($req->idPersediaan);
                 $getKodePersediaan = PersediaanKode::where('id_persediaan', $req->idPersediaan)->get();
                 $data = [

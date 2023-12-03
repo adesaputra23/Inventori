@@ -58,7 +58,7 @@ class PerpindahanController extends Controller
             $savePerpindahan->kode_ruang = $request->ruangan;
             $savePerpindahan->no_surat_perpindahan = $request->no_surat;
             $savePerpindahan->tanggal_perpindahan = $request->tanggal;
-            $savePerpindahan->uraian_perpindahan = $request->uraian;
+            // $savePerpindahan->uraian_perpindahan = $request->uraian;
             $savePerpindahan->ket_perpindahan = $request->keterangan;
             $savePerpindahan->save();
 

@@ -39,7 +39,7 @@ class LaporanController extends Controller
     public function PersediaanBarangPDF(Request $request)
     {
         try {
-            $title = 'Laporan Kartu Persediaan Barang';
+            $title = 'Laporan Kartu Barang Masuk';
             $listData = PersediaanBarang::get();
             if (isset($request->filter) || isset($request->cetakPdf)) {
                 $tanggal_start = $request->tanggal_start;

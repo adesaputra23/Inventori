@@ -45,7 +45,7 @@ class BarangKeluarController extends Controller
             $saveBarangKeluar->id_persediaan = $req->persediaan;
             $saveBarangKeluar->tanggal_keluar = $req->tanggal_keluar;
             $saveBarangKeluar->no_surat_keluar = $req->no_surat;
-            $saveBarangKeluar->uraian = $req->uraian;
+            // $saveBarangKeluar->uraian = $req->uraian;
             $saveBarangKeluar->jumlah_keluar = $req->jumlah_barang;
             $saveBarangKeluar->ket_keluar = $req->keterangan;
             $saveBarangKeluar->save();

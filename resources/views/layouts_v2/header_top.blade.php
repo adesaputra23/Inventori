@@ -16,15 +16,15 @@
                 <b class="logo-icon ps-2">
                     <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                     <!-- Dark Logo icon -->
-                    {{-- <img src="../../assets/images/logo-icon.png" alt="homepage" class="light-logo" /> --}}
-                    WEB
+                    <img src="{{asset('assets/images/logo_1.jpg')}}" alt="homepage" class="light-logo mx-2" width="20%" />
+                    INVENTORY
                 </b>
                 <!--End Logo icon -->
                 <!-- Logo text -->
                 <span class="logo-text">
                     <!-- dark Logo text -->
                     {{-- <img src="../../assets/images/logo-text.png" alt="homepage" class="light-logo" /> --}}
-                    INVENTORY
+                    {{-- Web Inventory --}}
                 </span>
                 <!-- Logo icon -->
                 <!-- <b class="logo-icon"> -->

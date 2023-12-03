@@ -11,7 +11,7 @@
             <th>No Surat</th>
             <th>Masuk</th>
             <th>Harga Satuan</th>
-            <th>Tanggal Persdiaan</th>
+            <th>Tanggal Masuk</th>
             <th>Keterangan</th>
         </tr>
     </thead>

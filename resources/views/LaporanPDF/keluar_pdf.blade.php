@@ -10,7 +10,7 @@
             <th>Kode Barang</th>
             <th>Jumlah Keluar</th>
             <th>No Surat Keluar</th>
-            <th>Uraian</th>
+            {{-- <th>Uraian</th> --}}
             <th>Keterangan</th>
         </tr>
     </thead>
@@ -23,7 +23,7 @@
                 <td>{{Persediaan::gnerateKode($data->id_persediaan)}} - {{$data->persediaan->nama_barang}}</td>
                 <td>{{$data->jumlah_keluar}}</td>
                 <td>{{$data->no_surat_keluar}}</td>
-                <td>{{$data->uraian ?? '-'}}</td>
+                {{-- <td>{{$data->uraian ?? '-'}}</td> --}}
                 <td>{{$data->ket_keluar ?? '-'}}</td>
             </tr>
         @endforeach
